@@ -49,6 +49,7 @@ fn main() -> Result<(), Error> {
             for choice in choices {
                 print!("'{}' is something you could do? [y/n] ", choice.0);
                 std::io::stdout().flush()?;
+                answer.clear();
                 stdin.read_line(&mut answer)?;
                 if answer.starts_with("y") {
                     let count = dotfile.counts.entry(choice.0.clone()).or_insert(0);
