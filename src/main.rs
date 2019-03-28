@@ -26,6 +26,11 @@ fn main() -> Result<(), Error> {
     let command = std::env::args().nth(1);
     let command = command.as_ref().map(|s| s.as_ref());
 
+    let project_counts = dotfile.projects.iter().map(|name| {
+        let count = dotfile.counts.get(name).unwrap_or(&0);
+        (name, *count)
+    }).collect::<Vec<_>>();
+
     match command {
         Some("reset") => {
             dotfile.counts.clear();
@@ -33,12 +38,22 @@ fn main() -> Result<(), Error> {
         Some("path") => {
             println!("{}", dotfile_path);
         }
-        None => {
-            let project_counts = dotfile.projects.iter().map(|name| {
-                let count = dotfile.counts.get(name).unwrap_or(&0);
-                (name, *count)
-            }).collect::<Vec<_>>();
+        Some("inc") => {
+            println!("Increment which count?");
+            for (index, project) in project_counts.iter().enumerate() {
+                println!("{: >2}) {}", index, project.0);
+            }
 
+            let mut answer = String::with_capacity(4);
+            let stdin = std::io::stdin();
+            stdin.read_line(&mut answer)?;
+
+            let index: usize = answer.trim().parse()?;
+            let project = project_counts[index].0.clone();
+            let count = dotfile.counts.entry(project).or_insert(0);
+            *count += 1;
+        }
+        None => {
             let min_count = project_counts.iter().map(|it| it.1).min().unwrap_or(0);
             let mut choices = project_counts.iter().filter(|it| it.1 < min_count + 4).collect::<Vec<_>>();
             choices.shuffle(r);
