@@ -11,6 +11,7 @@ struct Dotfile {
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 struct Project {
+    id: String,
     name: String,
     at: Vec<String>,
 }
@@ -39,7 +40,7 @@ fn main() -> Result<(), Error> {
         .projects
         .iter()
         .map(|project| {
-            let count = dotfile.counts.get(&project.name).unwrap_or(&0);
+            let count = dotfile.counts.get(&project.id).unwrap_or(&0);
             (project, *count)
         })
         .collect::<Vec<_>>();
@@ -62,7 +63,7 @@ fn main() -> Result<(), Error> {
             stdin.read_line(&mut answer)?;
 
             let index: usize = answer.trim().parse()?;
-            let project = project_counts[index].0.name.clone();
+            let project = project_counts[index].0.id.clone();
             let count = dotfile.counts.entry(project).or_insert(0);
             *count += 1;
         }
@@ -98,7 +99,7 @@ fn main() -> Result<(), Error> {
                 answer.clear();
                 stdin.read_line(&mut answer)?;
                 if answer.starts_with("y") {
-                    let count = dotfile.counts.entry(choice.0.name.clone()).or_insert(0);
+                    let count = dotfile.counts.entry(choice.0.id.clone()).or_insert(0);
                     *count += 1;
                     break;
                 }
