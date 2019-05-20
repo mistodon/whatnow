@@ -1,13 +1,16 @@
 ---
 projects:
-  - name: Read Twitter
+  - id: twitter
+    name: Read Twitter
     at:
       - home
       - work
-  - name: Do work
+  - id: work
+    name: Do work
     at:
       - work
-  - name: "Don't do work"
+  - id: nowork
+    name: "Don't do work"
     at:
       - home
 counts: {}
